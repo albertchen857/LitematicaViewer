@@ -3,6 +3,7 @@ import tkinter as tk
 import json, os
 from tkinter import filedialog, ttk
 from Litmatool import cn_translate, id_tran_name, grs
+from tkinter import messagebox
 #from LitematicaViewer import file_path
 
 data = json.load(open(grs(os.path.join('lang', 'data.json')), 'r', encoding='utf-8'))
@@ -38,7 +39,12 @@ def LitContainer() -> None:
         x = int(IntTag(nt['x']))
         y = int(IntTag(nt['y']))
         z = int(IntTag(nt['z']))
-        id = str(nt['id'])
+        try:
+            id = str(nt['id'])
+        except KeyError:
+            print(f"ERROR: 发现缺失'id'的TileEntity，位置:({x},{y},{z})")
+            messagebox.showerror("解析错误", f"发现缺失'id'的TileEntity，位置:({x},{y},{z})")
+            return
         if 'item' in nt:
             item = nt['item']
             cmd_table.insert(f"{l}.0" ,f"{cn_id(id)} Pos:{(x,y,z)}\n")
@@ -112,19 +118,19 @@ rootc = tk.Tk()
 rootc.title("Containers")
 rootc.iconbitmap(grs("icon.ico"))
 rootc.geometry("500x800")
-rootc.configure(bg=color_map["MC"])
+rootc.configure(bg=color_map[0]["MC"])
 
-Clable = tk.Label(rootc,text="容器探测", font=("Arial", 14, "bold"), bg=color_map["MC"], fg=color_map["TT"])
+Clable = tk.Label(rootc,text="容器探测", font=("Arial", 14, "bold"), bg=color_map[0]["MC"], fg=color_map[0]["TT"])
 Clable.pack()
 CBP = tk.Frame(rootc)
 CBP.pack()
-Cbutton = tk.Button(CBP,text="analysis",command=LitContainer, font=("Arial", 10), bg=color_map["PC"], fg=color_map["BG"])
+Cbutton = tk.Button(CBP,text="Analysis",command=LitContainer, font=("Arial", 10), bg=color_map[0]["PC"], fg=color_map[0]["BG"])
 Cbutton.grid(row=0,column = 0)
-Cbutton = tk.Button(CBP,text="ChooseFile",command=lambda :LitConImport(), font=("Arial", 10), bg=color_map["PC"], fg=color_map["BG"])
+Cbutton = tk.Button(CBP,text="ChooseFile",command=lambda :LitConImport(), font=("Arial", 10), bg=color_map[0]["PC"], fg=color_map[0]["BG"])
 Cbutton.grid(row=0,column = 1)
 Csroll = tk.Scrollbar(rootc, orient="vertical")
 Csroll.pack(side=tk.RIGHT, fill=tk.Y, padx=10)
-cmd_table = tk.Text(rootc, bg=color_map["BG"], fg=color_map["TT"], font=("Arial", 12), yscrollcommand=Csroll)
+cmd_table = tk.Text(rootc, bg=color_map[0]["BG"], fg=color_map[0]["TT"], font=("Arial", 12), yscrollcommand=Csroll)
 Csroll.config(command=cmd_table.yview)
 cmd_table.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=5, pady=10)
 

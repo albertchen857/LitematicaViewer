@@ -71,7 +71,11 @@ def on_exit():
 atexit.register(on_exit)
 
 def ConAly():
-    threading.Thread(target=lambda: subprocess.run(["python", grs(os.path.join('script', 'LitContainer.py'))]), daemon=True).start()
+    try:
+        from script.LitContainer import LitConImport
+    except:
+        from LitContainer import LitConImport
+    threading.Thread(target=LitConImport, daemon=True).start()
 
 def CS_trans_dict(inp:str) -> dict:
     d1 = inp.strip("\n").split(",")
